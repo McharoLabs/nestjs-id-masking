@@ -1,5 +1,5 @@
 import type { FactoryProvider, ModuleMetadata } from '@nestjs/common';
-import { MaskerConfig } from '../types/masker.types';
+import type { MaskerConfig } from '../types/masker.types';
 
 export interface MaskerModuleAsyncOptions<
   TArgs extends unknown[] = unknown[],

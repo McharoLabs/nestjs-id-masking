@@ -1,7 +1,8 @@
 import { Controller, Get, INestApplication } from '@nestjs/common';
-import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
+import { afterAll, beforeAll, describe, it } from '@jest/globals';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
+import type { Server } from 'node:http';
 
 import { UnmaskIdParam } from '../../decorators/unmask-id-param.decorator';
 import { MaskerModule } from '../../masker.module';
@@ -42,11 +43,15 @@ describe('UnmaskIdParam', () => {
     await app.close();
   });
 
+  const getHttpServer = (): Server => {
+    return app.getHttpServer() as Server;
+  };
+
   describe('valid route parameters', () => {
     it('should unmask the route parameter and return the numeric ID', async () => {
       const maskedId = maskerService.mask(123);
 
-      await request(app.getHttpServer())
+      await request(getHttpServer())
         .get(`/items/${maskedId}`)
         .expect(200)
         .expect({ id: 123 });
@@ -55,7 +60,7 @@ describe('UnmaskIdParam', () => {
     it('should support zero as a route parameter', async () => {
       const maskedId = maskerService.mask(0);
 
-      await request(app.getHttpServer())
+      await request(getHttpServer())
         .get(`/items/${maskedId}`)
         .expect(200)
         .expect({ id: 0 });
@@ -64,11 +69,11 @@ describe('UnmaskIdParam', () => {
 
   describe('invalid route parameters', () => {
     it('should return HTTP 400 for an invalid masked ID', async () => {
-      await request(app.getHttpServer()).get('/items/invalid!').expect(400);
+      await request(getHttpServer()).get('/items/invalid!').expect(400);
     });
 
     it('should return HTTP 404 when the route parameter is empty', async () => {
-      await request(app.getHttpServer()).get('/items/').expect(404);
+      await request(getHttpServer()).get('/items/').expect(404);
     });
   });
 });

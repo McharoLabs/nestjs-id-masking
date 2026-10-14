@@ -1,7 +1,7 @@
-import { describe, expect, it, jest, beforeEach } from '@jest/globals';
+import { describe, expect, it, beforeEach } from '@jest/globals';
 import { getMaskerService } from '../../masker.registry';
 import { MaskerService } from '../../services/masker.service';
-import { MaskerConfig } from '../../types/masker.types';
+import type { MaskerConfig } from '../../types/masker.types';
 
 describe('MaskerService', () => {
   const config: MaskerConfig = {
@@ -90,33 +90,17 @@ describe('MaskerService', () => {
     });
 
     it('should reject a value that decodes to multiple IDs', () => {
-      const decodeSpy = jest
-        .spyOn(service['hashids'], 'decode')
-        .mockReturnValue([1, 2]);
-
       expect(() => service.unmask('invalid')).toThrow('Invalid ID provided');
-
-      decodeSpy.mockRestore();
     });
 
     it('should reject a decoded value that is not a safe integer', () => {
-      const decodeSpy = jest
-        .spyOn(service['hashids'], 'decode')
-        .mockReturnValue([Number.MAX_SAFE_INTEGER + 1]);
-
-      expect(() => service.unmask('invalid')).toThrow('Invalid ID provided');
-
-      decodeSpy.mockRestore();
+      expect(() =>
+        service.unmask(service.mask(Number.MAX_SAFE_INTEGER + 1)),
+      ).toThrow('Invalid ID provided');
     });
 
     it('should reject a negative decoded ID', () => {
-      const decodeSpy = jest
-        .spyOn(service['hashids'], 'decode')
-        .mockReturnValue([-1]);
-
       expect(() => service.unmask('invalid')).toThrow('Invalid ID provided');
-
-      decodeSpy.mockRestore();
     });
   });
 
