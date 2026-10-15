@@ -1,5 +1,5 @@
 {
-  "name": "nestjs-id-masking",
+  "name": "@mcharolabs/nestjs-id-masking",
   "version": "0.0.1",
   "description": "A reusable NestJS library for masking and unmasking numeric IDs",
   "type": "commonjs",
@@ -12,11 +12,14 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "src",
+    "tsconfig.json",
+    "tsconfig.build.json"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "prepare": "npm run build",
+    "postinstall": "npm run build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
@@ -63,5 +66,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "allowScripts": {
+    "@mcharolabs/nestjs-id-masking": true
+  }
 }
